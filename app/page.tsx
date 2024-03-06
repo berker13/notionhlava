@@ -2,14 +2,15 @@ const { PrismaClient } = require('@prisma/client');
 
 export default async function HomePage() {
     const prisma = new PrismaClient()
-    const users = await prisma.user.findMany({});
-    const post = await prisma.post.findMany({});
+    const users = await prisma.user.findMany();
+    const post = await prisma.post.findMany();
     console.log(users);
 
     return (
         <div className="flex px-4 py-4 space-x-5 bg-color-slate-500">
             {
-                users.map((user)=><Card title={user.firstName} description={user.lastName} checked={true}/>
+                // eslint-disable-next-line react/jsx-key
+                users.map((user)=> <Card title={user.email} description={user.name} checked={true}/>
             )}
         </div>
     )
@@ -27,18 +28,16 @@ class ToDoItemProps
     checked: Boolean;
 }
 
-        return (
-            <main className="px-4 py-8">
-                <div className="w-72 h-96 bg-white shadow-lg rounded-lg overflow-hidden">
-                    <div className="p-6">
-                        <h2 className="text-xl font-bold mb-2">Úloha 1</h2>
-                        <p className="text-gray-700 mb-4">Toto je první úloha, můžete ji upravit nebo smazat</p>
-                        <div className="flex justify-between">
-                            <button className="px-4 py-2 bg-blue-500 text-white rounded-md mr-2">Upravit</button>
-                            <button className="px-4 py-2 bg-gray-500 text-white rounded-md">Smazat</button>
-                        </div>
-                    </div>
-                </div>
-            </main>
+    return (
+        <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+            <div className="flex max-w-[980px] flex-col items-start gap-2">
+                <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+                    Beautifully Todo App.
+                </h1>
+                <p className="max-w-[700px] text-lg text-muted-foreground">
+                    Create your Todo list.
+                </p>
+            </div>
+        </section>
         )
     }
