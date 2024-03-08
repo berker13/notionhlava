@@ -1,43 +1,51 @@
-const { PrismaClient } = require('@prisma/client');
+import Link from "next/link"
+import Todo from "./components/todo";
+import {prisma} from "./db";
 
-export default async function HomePage() {
-    const prisma = new PrismaClient()
-    const users = await prisma.user.findMany();
-    const post = await prisma.post.findMany();
-    console.log(users);
+export type TodoType = {
+    id: string;
+    title: string;
+    complete: boolean;
+    deleted: boolean;
+};
 
-    return (
-        <div className="flex px-4 py-4 space-x-5 bg-color-slate-500">
-            {
-                // eslint-disable-next-line react/jsx-key
-                users.map((user)=> <Card title={user.email} description={user.name} checked={true}/>
-            )}
-        </div>
-    )
-function Card({title, description, checked}:ToDoItemProps){
-        return <div className="flex flex-col center bg-slate-300 hover:bg-slate-600 w-1/6 h-60">
-            <h2>Jméno</h2> <h2> {title} </h2>
-            <label className="text-xs"> {description} </label>
-        </div>
-}
+export default async function Home() {
 
-class ToDoItemProps
-{
-    title:string;
-    description: string;
-    checked: Boolean;
-}
+    // await prisma.todo.create({data : {title: "test", complete: true}})
 
-    return (
-        <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-            <div className="flex max-w-[980px] flex-col items-start gap-2">
-                <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-                    Beautifully Todo App.
-                </h1>
-                <p className="max-w-[700px] text-lg text-muted-foreground">
-                    Create your Todo list.
-                </p>
-            </div>
-        </section>
-        )
+    async function getTodos(){
+        return prisma.todo.findMany({
+
+        });
     }
+    const todos = await getTodos();
+
+    return (
+        <>
+            <Link
+                href="/newitem"
+                className="border border-slate-300 text-slate-300 rounded px-2 py-1 hover:bg-zinc-700 focus-within:bg-zinc-700 outline-none"
+            >
+                New
+            </Link>
+
+            <header className="flex justify-between items-center pb-5">
+                <h1 className="text-2xl underline underline-offset-4 ">Todos</h1>
+
+            </header>
+            <ul className="pl-4">
+                {todos.map((todo) => (
+                    // <li key={todo.id}> {todo.title} </li>
+
+                    <Todo
+                        key={todo.id}
+                        {...todo}
+                        toggleTodo={toggleTodo}
+                        deleteTodo={deleteTodo}
+                    ></Todo
+                    >
+                ))}
+            </ul>
+        </>
+    );
+}
